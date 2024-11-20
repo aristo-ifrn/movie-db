@@ -39,16 +39,14 @@ Dependency used:
 
 ## 🧑🏻‍💻 Getting Started
 
-Clone the project and access the root folder:
+#### Clone the project and access the root folder:
 
 ```bash
 $ git clone https://github.com/aristo-ifrn/movie-db
 $ cd movie-db
 ```
-<br />
 
-Setting up the environment
-<br/>
+#### Setting up the environment:
 
 Make sure you have the MySQL Connector/J:
 
@@ -59,12 +57,11 @@ Make sure you have the MySQL Connector/J:
 2. Set up the database:
    - Create a MySQL database with the required tables.
    - Update the project's configuration file with your database credentials.
-<br />
-<br />
 
-Running the project
-<br />
+#### Running the project:
+
 Use your preferred IDE or terminal to compile and run the application. Ensure the MySQL database is running and properly connected.
+
 <br>
 
 ## 💻&nbsp; Project
@@ -77,7 +74,6 @@ Use your preferred IDE or terminal to compile and run the application. Ensure th
 - ```lib/:``` External dependencies like MySQL Connector/J.
 - ```build/:``` Compiled Java files.
 - ```test/:``` Unit tests for the application.
-<br />
 
 #### 🚀&nbsp; Features
 
