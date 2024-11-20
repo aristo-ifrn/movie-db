@@ -1,0 +1,33 @@
+# Ignore os diretórios e arquivos gerados pela IDE ou build
+/build/
+/nbproject/private/
+/lib/
+/dist/
+/test/build/
+/test/dist/
+
+# Ignore logs e arquivos temporários
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+
+# Ignore os binários e arquivos compilados
+*.class
+*.jar
+*.war
+*.ear
+
+# Ignore arquivos de configuração específicos do usuário
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Ignore o arquivo de manifesto gerado
+manifest.mf
+
+# Inclua o build.xml para que ele seja versionado
+!build.xml
