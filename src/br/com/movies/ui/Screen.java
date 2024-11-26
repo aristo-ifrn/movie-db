@@ -21,9 +21,8 @@ import javax.swing.table.TableColumnModel;
  */
 public final class Screen extends javax.swing.JPanel {
 
-    /**
-     * Creates new form Screen
-     */
+    private int id = 0;
+
     public Screen() {
         initComponents();
         loadTable();
@@ -40,50 +39,80 @@ public final class Screen extends javax.swing.JPanel {
         }
     }
 
-    public void loadAllDataIntoTable(List<Movie> movies) {
-        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
-
-        dtm.setRowCount(0);
-
-        for (Movie movie : movies) {
-            ArrayList<Object> rowData = new ArrayList<>();
-            rowData.add(movie.getId());
-            rowData.add(movie.getTitle());
-            rowData.add(movie.getDuration() + " minutos");
-            rowData.add(movie.getAgeRating());
-
-            dtm.addRow(rowData.toArray());
-        }
-    }
-
-    public void loadTable() {
-        MovieDAO dao = new MovieDAO();
-
-        List<Movie> movies = dao.getMovies();
-        loadAllDataIntoTable(movies);
-    }
-
-    public Movie returnDataToTextFields(int id) {
-        Movie movie = null;
-
-        try {
-            MovieDAO dao = new MovieDAO();
-            movie = dao.getMovieById(id);
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "" + e);
-        }
-
-        return movie;
-    }
-
     public void clearFields() {
         id = 0;
         title.setText("");
         release.setText("");
-        rating.setSelectedIndex(1);
         duration.setText("");
+        rating.setSelectedIndex(0);
         trailer.setText("");
         image.setText("");
+    }
+
+    private boolean validateFields() {
+        String movieTitle = title.getText().trim();
+        String movieRelease = release.getText().trim();
+        String movieDuration = duration.getText().trim();
+        String movieTrailer = trailer.getText().trim();
+        String movieImage = image.getText().trim();
+
+        if (movieTitle.isEmpty() || movieRelease.isEmpty() || movieDuration.isEmpty() || movieTrailer.isEmpty() || movieImage.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        try {
+            int releaseYear = Integer.parseInt(movieRelease);
+            if (releaseYear < 1888) { // Primeiro filme da história foi lançado em 1888
+                JOptionPane.showMessageDialog(this, "O ano de lançamento deve ser maior ou igual a 1888.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+
+            int durationValue = Integer.parseInt(movieDuration);
+            if (durationValue <= 0) {
+                JOptionPane.showMessageDialog(this, "A duração deve ser maior que zero.", "Erro", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "O ano de lançamento e a duração devem ser números válidos.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
+    }
+
+    public void loadTable() {
+        try {
+            MovieDAO dao = new MovieDAO();
+            List<Movie> movies = dao.getMovies();
+            loadAllDataIntoTable(movies);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao carregar os filmes: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public void loadAllDataIntoTable(List<Movie> movies) {
+        DefaultTableModel dtm = (DefaultTableModel) table.getModel();
+        dtm.setRowCount(0);
+
+        for (Movie movie : movies) {
+            dtm.addRow(new Object[]{
+                movie.getId(),
+                movie.getTitle(),
+                movie.getDuration() + " minutos",
+                movie.getAgeRating()
+            });
+        }
+    }
+
+    public Movie returnDataToTextFields(int id) {
+        try {
+            MovieDAO dao = new MovieDAO();
+            return dao.getMovieById(id);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao buscar o filme: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
     }
 
     /**
@@ -339,22 +368,30 @@ public final class Screen extends javax.swing.JPanel {
     }//GEN-LAST:event_imageActionPerformed
 
     private void UpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_UpdateActionPerformed
-        String movieTitle = title.getText().trim();
-        int movieRelease = Integer.parseInt(release.getText().trim());
-        int movieDuration = Integer.parseInt(duration.getText().trim());
-        String movieRating = (String) rating.getSelectedItem();
-        String movieTrailer = trailer.getText().trim();
-        String movieImage = image.getText().trim();
-
-        if (movieTitle.isEmpty() || String.valueOf(movieRelease).trim().isEmpty() || String.valueOf(movieDuration).trim().isEmpty() || movieRating.isEmpty() || movieTrailer.isEmpty() || movieImage.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (!validateFields() || id == 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um filme para atualizar.", "Erro", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Movie movie = new Movie(movieDuration, movieTitle, movieRelease, movieRating, movieTrailer, movieImage);
-        MovieDAO dao = new MovieDAO();
 
-        dao.update(movie, id);
-        loadTable();
+        try {
+            Movie movie = new Movie(
+                    Integer.parseInt(duration.getText().trim()),
+                    title.getText().trim(),
+                    Integer.parseInt(release.getText().trim()),
+                    (String) rating.getSelectedItem(),
+                    trailer.getText().trim(),
+                    image.getText().trim()
+            );
+
+            MovieDAO dao = new MovieDAO();
+            dao.update(movie, id);
+
+            loadTable();
+            clearFields();
+            JOptionPane.showMessageDialog(this, "Filme atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao atualizar o filme: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_UpdateActionPerformed
 
     private void ratingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ratingActionPerformed
@@ -366,61 +403,61 @@ public final class Screen extends javax.swing.JPanel {
     }//GEN-LAST:event_ClearActionPerformed
 
     private void AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddActionPerformed
-        String movieTitle = title.getText().trim();
-        String movieRelease = release.getText().trim();
-        String movieDuration = duration.getText().trim();
-        String movieRating = (String) rating.getSelectedItem();
-        String movieTrailer = trailer.getText().trim();
-        String movieImage = image.getText().trim();
-
-        if (movieTitle.isEmpty() || movieRelease.isEmpty() || movieDuration.isEmpty() || movieRating.isEmpty() || movieTrailer.isEmpty() || movieImage.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Por favor, preencha todos os campos obrigatórios.", "Erro", JOptionPane.ERROR_MESSAGE);
+        if (!validateFields()) {
             return;
         }
 
         try {
-
-            int durationValue = Integer.parseInt(movieDuration);
-
-            Movie newMovie = new Movie();
-            newMovie.setTitle(movieTitle);
-            newMovie.setReleaseYear(Integer.parseInt(movieRelease));
-            newMovie.setDuration(durationValue);
-            newMovie.setAgeRating(movieRating);
-            newMovie.setTrailerUrl(movieTrailer);
-            newMovie.setImageUrl(movieImage);
+            Movie movie = new Movie(
+                    Integer.parseInt(duration.getText().trim()),
+                    title.getText().trim(),
+                    Integer.parseInt(release.getText().trim()),
+                    (String) rating.getSelectedItem(),
+                    trailer.getText().trim(),
+                    image.getText().trim()
+            );
 
             MovieDAO dao = new MovieDAO();
-            dao.add(newMovie);
+            dao.add(movie);
 
             loadTable();
             clearFields();
-            
             JOptionPane.showMessageDialog(this, "Filme adicionado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "A duração deve ser um número válido.", "Erro", JOptionPane.ERROR_MESSAGE);
-        } catch (HeadlessException ex) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar o filme: " + ex.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao adicionar o filme: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_AddActionPerformed
 
     private void DeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DeleteActionPerformed
-        MovieDAO dao = new MovieDAO();
+        if (id == 0) {
+            JOptionPane.showMessageDialog(this, "Selecione um filme para deletar.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
-        dao.delete(id);
-        clearFields();
-        loadTable();
+        try {
+            MovieDAO dao = new MovieDAO();
+            dao.delete(id);
+
+            loadTable();
+            clearFields();
+            JOptionPane.showMessageDialog(this, "Filme deletado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro ao deletar o filme: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_DeleteActionPerformed
-    int id = 0;
+
     private void tableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tableMouseClicked
         int selectedRow = table.getSelectedRow();
 
         if (selectedRow < 0) {
-            JOptionPane.showMessageDialog(null, "Por favor, selecione algum filme para atualização");
-        } else {
-            id = (int) table.getValueAt(selectedRow, 0);
-            Movie movie = returnDataToTextFields(id);
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um filme.", "Erro", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
 
+        id = (int) table.getValueAt(selectedRow, 0);
+        Movie movie = returnDataToTextFields(id);
+
+        if (movie != null) {
             title.setText(movie.getTitle());
             release.setText(String.valueOf(movie.getReleaseYear()));
             duration.setText(String.valueOf(movie.getDuration()));
