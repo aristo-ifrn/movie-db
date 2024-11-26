@@ -20,7 +20,7 @@
   </a>
 </p>
 
-<p align="center">🎥 A Java-based movie manager system integrated with a MySQL database.</p>
+<p align="center">🎥 A Java Swing-based movie manager system integrated with a MySQL database.</p>
 
 <br>
 
@@ -28,8 +28,9 @@
 
 This project was developed using the following technologies:
 
-- Java 11+
-- MySQL
+- [Java 11+](https://dev.java/)
+- [MySQL](https://www.mysql.com/)
+- [Swing (GUI library)](https://docs.oracle.com/javase/8/docs/technotes/guides/swing/)
 
 Dependency used:
 
@@ -48,19 +49,29 @@ $ cd movie-db
 
 #### Setting up the environment:
 
-Make sure you have the MySQL Connector/J:
+1. Set up the database:
 
-1. Download the ```.jar``` file from the [official MySQL Connector page](https://dev.mysql.com/downloads/connector/j/).
-   - Add the ```.jar``` file to the project's classpath.
-   - Place the file in the ```lib/``` folder or configure it in your IDE.
+   - Create a MySQL database with the required tables, using `db.sql` file.
 
-2. Set up the database:
-   - Create a MySQL database with the required tables.
-   - Update the project's configuration file with your database credentials.
+2. Download the `.jar` file from the [official MySQL Connector page](https://dev.mysql.com/downloads/connector/j/).
+
+   - Add the `.jar` file to the project's classpath.
+   - Place the file in the `lib/` folder or configure it in your IDE.
+
+3. Project Configuration:
+   - Open the project in NetBeans or your preferred IDE.
+   - Configure database credentials in the `MovieDAO` file:
+
+```java
+private static final String URL = "jdbc:mysql://localhost:3306/movie_db";
+private static final String USER = "your_username";
+private static final String PASSWORD = "your_password";
+```
 
 #### Running the project:
 
-Use your preferred IDE or terminal to compile and run the application. Ensure the MySQL database is running and properly connected.
+- Execute the `Teste.java` class to launch the application.
+- Ensure the MySQL server is running locally.
 
 <br>
 
@@ -70,39 +81,39 @@ Use your preferred IDE or terminal to compile and run the application. Ensure th
 
 #### 🎨&nbsp; Project Structure
 
-- ```src/:``` Contains the source code for the application.
-- ```lib/:``` External dependencies like MySQL Connector/J.
-- ```build/:``` Compiled Java files.
-- ```test/:``` Unit tests for the application.
+- `src/:` Contains the source code for the application.
+- `lib/:` External dependencies like MySQL Connector/J.
+- `build/:` Compiled Java files.
+- `test/:` Unit tests for the application.
 
 #### 🚀&nbsp; Features
 
-- [x] Register new movies.
-- [x] Update movie information.
-- [x] Delete movies.
-- [x] Search for movies by name or filters (e.g., year, genre).
-- [x] User-friendly CLI for interactions.
+- [x] Add new movies with details such as title, release year, duration, age rating, trailer URL, and image URL.
+- [x] Edit movie records easily using a graphical interface.
+- [x] Delete movies from the database.
+- [x] Search movies by name or apply filters like release year or genre.
+- [x] Improved error handling with user-friendly messages.
 
 <br />
 
 ## 🧑🏻&nbsp; Author
 
 <p align="center">
-  <img width="14%" src="https://images.weserv.nl/?url=github.com/aristofany-herderson.png?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" alt="aristofany-herderson">
-  <p align="center">
-    Aristofany Herderson
-  </p>
-  <p align="center">
-    <a  href="https://www.linkedin.com/in/aristofany-herderson/" target="_blank">
-    <img align="center" src="https://img.shields.io/badge/LINKEDIN-000000.svg?style=for-the-badge&labelColor=0a66c2&logo=linkedin&logoColor=fff&logoWidth=20" alt="linkedin"/>
-    </a>
-    <a href="https://twitter.com/aristofanyherde" target="_blank">
-      <img align="center" src="https://img.shields.io/badge/TWITTER-000000.svg?style=for-the-badge&labelColor=1d9bf0&logo=x&logoColor=fff&logoWidth=20" alt="linkedin"/>
-    </a>
-    <a href="https://www.instagram.com/aristofany_herderson/" target="_blank">
-      <img align="center" src="https://img.shields.io/badge/INSTAGRAM-000000.svg?style=for-the-badge&labelColor=dd326f&logo=instagram&logoColor=fff&logoWidth=20" alt="linkedin"/>
-    </a>
-  </p>
+<img width="14%" src="https://images.weserv.nl/?url=github.com/aristofany-herderson.png?v=4&h=300&w=300&fit=cover&mask=circle&maxage=7d" alt="aristofany-herderson">
+<p align="center">
+  Aristofany Herderson
+</p>
+<p align="center">
+  <a  href="https://www.linkedin.com/in/aristofany-herderson/" target="_blank">
+  <img align="center" src="https://img.shields.io/badge/LINKEDIN-000000.svg?style=for-the-badge&labelColor=0a66c2&logo=linkedin&logoColor=fff&logoWidth=20" alt="linkedin"/>
+  </a>
+  <a href="https://twitter.com/aristofanyherde" target="_blank">
+    <img align="center" src="https://img.shields.io/badge/TWITTER-000000.svg?style=for-the-badge&labelColor=1d9bf0&logo=x&logoColor=fff&logoWidth=20" alt="linkedin"/>
+  </a>
+  <a href="https://www.instagram.com/aristofany_herderson/" target="_blank">
+    <img align="center" src="https://img.shields.io/badge/INSTAGRAM-000000.svg?style=for-the-badge&labelColor=dd326f&logo=instagram&logoColor=fff&logoWidth=20" alt="linkedin"/>
+  </a>
+</p>
 </p>
 
 <br>
